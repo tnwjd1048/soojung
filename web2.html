@@ -3,54 +3,27 @@
 <head>
 <title>자기 소개</title>
 <meta charset="utf-8">
-<script>
-  function nightDayhandler(self){
-    var target = document.querySelector('body');
-    if(self.value === 'night'){
-      target.style.backgroundColor ='black';
-      target.style.color ='white';
-      self.value = 'day';
-
-      var alist = document.querySelectorAll('a');
-      var i = 0;
-        while(i < alist.length){
-          alist[i].style.color = 'powderblue';
-          i = i + 1
-        }
-
-    }else
-    {  target.style.backgroundColor = 'rgb(245, 197, 223)';
-      target.style.color ='black';
-      self.value = 'night';
-
-      var alist = document.querySelectorAll('a');
-      var i = 0;
-        while(i < alist.length){
-          alist[i].style.color = 'blue';
-          i = i + 1
-        }
-}}
-</script>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <h1><a href="web2.html">내가 좋아하는 것들</a></h1>
+  <h1><a href="index.html">내가 좋아하는 것들</a></h1>
 
   <input type="button" value="night" onclick="nightDayhandler(this);">
 
-<ol>
+<ul>
   <li><a href="1-1.html">Music</a></li>
   <li><a href="1-2.html">Food</a></li>
-</ol>
+</ul>
 <h2>나는 누구일까?</h2>
 <p>
     나는 서울에서 태어나 지금은 인천에서 웹기초를 공부하고 있는 박수정이라고 한다.<br>
     이 페이지는 내가 가장 좋아하는 것들을 소개하는 문서다.
 
 </p>
-  
-<div id="webcam-container"></div>
-<div id="label-container"></div>
+
+
+<div style="visibility: hidden; position: absolute;" id="webcam-container"></div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 <script type="text/javascript">
@@ -60,7 +33,7 @@
     // the link to your model provided by Teachable Machine export panel
     const URL = "https://teachablemachine.withgoogle.com/models/EBoqOo5B6/";
 
-    let model, webcam, labelContainer, maxPredictions;
+    let model, webcam, maxPredictions;
 
     // Load the image model and setup the webcam
     async function init() {
@@ -83,10 +56,6 @@
 
         // append elements to the DOM
         document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
     }
 
     async function loop() {
@@ -99,13 +68,20 @@
     async function predict() {
         // predict can take in an image, video or canvas html element
         const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+        console.log(prediction[0].probability);
+        if(prediction[0].probability>0.5){
+          console.log('day');
+          document.querySelector('body').style.backgroundColor='rgb(245, 197, 223)';
+          document.querySelector('body').style.color='black';
+        }
+        else{
+          console.log('night');
+          document.querySelector('body').style.backgroundColor='black';
+          document.querySelector('body').style.color='rgb(245, 197, 223)';
         }
     }
     inti();
 </script>
+
 </body>
 </html>
